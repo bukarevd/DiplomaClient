@@ -12,7 +12,6 @@ public class FileObject extends CommandsObject implements Externalizable {
     String content;
     String owner;
     String group;
-    String dependence;
     int chmod;
 
     public String getName() {
@@ -55,32 +54,13 @@ public class FileObject extends CommandsObject implements Externalizable {
         this.group = group;
     }
 
-    public String getDependence() {
-        return dependence;
-    }
-
-    public void setDependence(String dependence) {
-        this.dependence = dependence;
-    }
-
     public int getChmod() {
         return chmod;
     }
 
-    public void setChmod(int chown) {
-        this.chmod = chown;
+    public void setChmod(int chmod) {
+        this.chmod = chmod;
     }
-
-
-//    public void setValue(HashMap<String, String> ValuesHashMap) {
-//        setName(ValuesHashMap.get("name"));
-//        setPath(ValuesHashMap.get("path"));
-//        setContent(ValuesHashMap.get("content"));
-//        setOwner(ValuesHashMap.get("owner"));
-//        setGroup(ValuesHashMap.get("group"));
-//        setDependence(ValuesHashMap.get("dependence"));
-//        setChmod(Integer.parseInt(ValuesHashMap.get("chown")));
-//    }
 
 
     public void execute() {
@@ -100,7 +80,6 @@ public class FileObject extends CommandsObject implements Externalizable {
         out.writeUTF(getContent());
         out.writeUTF(getOwner());
         out.writeUTF(getGroup());
-       // out.writeUTF(getDependence());
         out.writeInt(getChmod());
     }
 
@@ -115,7 +94,6 @@ public class FileObject extends CommandsObject implements Externalizable {
         setContent(in.readUTF());
         setOwner(in.readUTF());
         setGroup(in.readUTF());
-       // setDependence(in.readUTF());
         setChmod(in.readInt());
     }
 }
