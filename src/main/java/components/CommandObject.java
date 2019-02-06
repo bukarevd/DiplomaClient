@@ -1,37 +1,43 @@
 package components;
 
-import java.io.*;
-import java.util.HashMap;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 public class CommandObject extends CommandsObject implements Externalizable {
     private static final long serialVersionUID = 1L;
     private static final int VERSION = 1;
-    String name;
-    String exec;
+    private String name = "";
+    private String exec = "";
+    private String dependency = "";
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name = name;
     }
 
-    public String getExec() {
+    private String getExec() {
         return exec;
     }
 
-    public void setExec(String exec) {
+    private void setExec(String exec) {
         this.exec = exec;
     }
 
-
-    public void setValue(HashMap<String, String> ValuesHashMap) {
-        setName(ValuesHashMap.get("name"));
-        setExec(ValuesHashMap.get("exec"));
+    private String getDependency() {
+        return dependency;
     }
 
-    public void execute(){
+    private void setDependency(String dependency) {
+        this.dependency = dependency;
+    }
+
+
+    public void execute() {
         ExecutorCommand executorCommand = new ExecutorCommand();
         String str = getExec();
         System.out.println(str);
@@ -42,18 +48,20 @@ public class CommandObject extends CommandsObject implements Externalizable {
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeInt(VERSION);
-        out.writeUTF(name);
-        out.writeUTF(exec);
+        out.writeUTF(getName());
+        out.writeUTF(getExec());
+        out.writeUTF(getDependency());
 
     }
 
     @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException {
         int version = in.readInt();
-        if (version > VERSION){
+        if (version > VERSION) {
             throw new IOException("Unsupport version CommandObject");
         }
         setName(in.readUTF());
         setExec(in.readUTF());
+        setDependency(in.readUTF());
     }
 }

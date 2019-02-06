@@ -1,16 +1,18 @@
 package components;
 
-import java.io.*;
-import java.util.HashMap;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 public class PackageObject extends CommandsObject implements Externalizable {
     private static final long serialVersionUID = 1L;
     private static final int VERSION = 1;
-    String name;
-    String version;
-    String dependence;
+    private String name = "";
+    private String version = "";
+    private String dependence = "";
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name = name;
     }
 
@@ -18,30 +20,24 @@ public class PackageObject extends CommandsObject implements Externalizable {
         return name;
     }
 
-    public String getVersion() {
+    private String getVersion() {
         return version;
     }
 
-    public String getDependence() {
+    private String getDependence() {
         return dependence;
     }
 
-    public void setVersion(String version) {
+    private void setVersion(String version) {
         this.version = version;
     }
 
-    public void setDependence(String dependence) {
+    private void setDependence(String dependence) {
         this.dependence = dependence;
     }
 
-    public void setValue(HashMap<String, String> ValuesHashMap) {
-        setName(ValuesHashMap.get("name"));
-        setVersion(ValuesHashMap.get("version"));
-        setDependence(ValuesHashMap.get("dependence"));
-    }
 
-
-    public void execute(){
+    public void execute() {
         ExecutorCommand executorCommand = new ExecutorCommand();
         String str;
         if (getVersion() != null)
@@ -63,9 +59,9 @@ public class PackageObject extends CommandsObject implements Externalizable {
     }
 
     @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException {
         int version = in.readInt();
-        if (version > VERSION){
+        if (version > VERSION) {
             throw new IOException("Unsupport version PackageObject " + version);
         }
         setName(in.readUTF());

@@ -13,7 +13,6 @@ public class Client extends DiplomaApp {
     private int serverPort;
     private String nameClient;
     private String server;
-    private String shell;
 
     public File getCLIENTCONFIG() {
         return CLIENTCONFIG;
@@ -27,11 +26,11 @@ public class Client extends DiplomaApp {
         this.clientPort = clientPort;
     }
 
-    public String getClientAddress() {
+    private String getClientAddress() {
         return clientAddress;
     }
 
-    public void setClientAddress(String clientAddress) {
+    private void setClientAddress(String clientAddress) {
         this.clientAddress = clientAddress;
     }
 
@@ -57,14 +56,6 @@ public class Client extends DiplomaApp {
 
     public void setServer(String server) {
         this.server = server;
-    }
-
-    public String getShell() {
-        return shell;
-    }
-
-    public void setShell(String shell) {
-        this.shell = shell;
     }
 
     public static void main(String[] args) {
@@ -97,16 +88,16 @@ public class Client extends DiplomaApp {
     }
 
     private void pushObject(Socket socket, Client client) throws IOException {
-// соединение с сервером
+// соединение с сервером для отправки имени клиента
         socket.connect(new InetSocketAddress(client.getServer(), client.getServerPort()));
         OutputStream out = socket.getOutputStream();
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(out);
+
     }
 
     private void getCommandObject(Socket socket) {
 
 //        получение объекста манифеста с сервера
-        CommandsObject commandsObject = null;
+        CommandsObject commandsObject;
         try {
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
            while (socket.getInputStream().available() != 0) {
@@ -125,9 +116,7 @@ public class Client extends DiplomaApp {
                 }
             }
             socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

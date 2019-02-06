@@ -1,64 +1,74 @@
 package components;
 
-import java.io.*;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 public class FileObject extends CommandsObject implements Externalizable {
     private static final long serialVersionUID = 1L;
     private static final int VERSION = 1;
-    String name;
-    String path;
-    String content;
-    String owner;
-    String group;
-    int chmod;
+    private String name = "";
+    private String path = "";
+    private String content = "";
+    private String owner = "";
+    private String group = "";
+    private String dependency = "";
+    private int chmod;
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name = name;
     }
 
-    public String getPath() {
+    private String getPath() {
         return path;
     }
 
-    public void setPath(String path) {
+    private void setPath(String path) {
         this.path = path;
     }
 
-    public String getContent() {
+    private String getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    private void setContent(String content) {
         this.content = content;
     }
 
-    public String getOwner() {
+    private String getOwner() {
         return owner;
     }
 
-    public void setOwner(String owner) {
+    private void setOwner(String owner) {
         this.owner = owner;
     }
 
-    public String getGroup() {
+    private String getGroup() {
         return group;
     }
 
-    public void setGroup(String group) {
+    private void setGroup(String group) {
         this.group = group;
     }
 
-    public int getChmod() {
+    private String getDependency() {
+        return dependency;
+    }
+
+    private void setDependency(String dependency) {
+        this.dependency = dependency;
+    }
+
+    private int getChmod() {
         return chmod;
     }
 
-    public void setChmod(int chmod) {
+    private void setChmod(int chmod) {
         this.chmod = chmod;
     }
 
@@ -80,13 +90,14 @@ public class FileObject extends CommandsObject implements Externalizable {
         out.writeUTF(getContent());
         out.writeUTF(getOwner());
         out.writeUTF(getGroup());
+        out.writeUTF(getDependency());
         out.writeInt(getChmod());
     }
 
     @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException {
         int version = in.readInt();
-        if (version > VERSION){
+        if (version > VERSION) {
             throw new IOException("Unsupport version FileObject");
         }
         setName(in.readUTF());
@@ -94,6 +105,7 @@ public class FileObject extends CommandsObject implements Externalizable {
         setContent(in.readUTF());
         setOwner(in.readUTF());
         setGroup(in.readUTF());
+        setDependency(in.readUTF());
         setChmod(in.readInt());
     }
 }
