@@ -15,6 +15,8 @@ public class FileObject extends CommandsObject implements Externalizable {
     private String group = "";
     private String dependency = "";
     private int chmod;
+    CommandsObject objectDependecy = null;
+
 
     public String getName() {
         return name;
@@ -56,7 +58,7 @@ public class FileObject extends CommandsObject implements Externalizable {
         this.group = group;
     }
 
-    private String getDependency() {
+    public String getDependency() {
         return dependency;
     }
 
@@ -72,6 +74,13 @@ public class FileObject extends CommandsObject implements Externalizable {
         this.chmod = chmod;
     }
 
+    public CommandsObject getObjectDependecy() {
+        return objectDependecy;
+    }
+
+    public void setObjectDependecy(CommandsObject objectDependecy) {
+        this.objectDependecy = objectDependecy;
+    }
 
     public void execute() {
 //        дописать проверку на пустоту Getter, установку владельца и прав на файл
@@ -92,10 +101,11 @@ public class FileObject extends CommandsObject implements Externalizable {
         out.writeUTF(getGroup());
         out.writeUTF(getDependency());
         out.writeInt(getChmod());
+        out.writeObject(getObjectDependecy());
     }
 
     @Override
-    public void readExternal(ObjectInput in) throws IOException {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         int version = in.readInt();
         if (version > VERSION) {
             throw new IOException("Unsupport version FileObject");
@@ -107,6 +117,7 @@ public class FileObject extends CommandsObject implements Externalizable {
         setGroup(in.readUTF());
         setDependency(in.readUTF());
         setChmod(in.readInt());
+        setObjectDependecy((CommandsObject) in.readObject());
     }
 }
 

@@ -11,6 +11,8 @@ public class CommandObject extends CommandsObject implements Externalizable {
     private String name = "";
     private String exec = "";
     private String dependency = "";
+    CommandsObject objectDependecy = null;
+
 
     public String getName() {
         return name;
@@ -28,7 +30,7 @@ public class CommandObject extends CommandsObject implements Externalizable {
         this.exec = exec;
     }
 
-    private String getDependency() {
+    public String getDependency() {
         return dependency;
     }
 
@@ -36,6 +38,13 @@ public class CommandObject extends CommandsObject implements Externalizable {
         this.dependency = dependency;
     }
 
+    public CommandsObject getObjectDependecy() {
+        return objectDependecy;
+    }
+
+    public void setObjectDependecy(CommandsObject objectDependecy) {
+        this.objectDependecy = objectDependecy;
+    }
 
     public void execute() {
         ExecutorCommand executorCommand = new ExecutorCommand();
@@ -51,11 +60,12 @@ public class CommandObject extends CommandsObject implements Externalizable {
         out.writeUTF(getName());
         out.writeUTF(getExec());
         out.writeUTF(getDependency());
+        out.writeObject(getObjectDependecy());
 
     }
 
     @Override
-    public void readExternal(ObjectInput in) throws IOException {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         int version = in.readInt();
         if (version > VERSION) {
             throw new IOException("Unsupport version CommandObject");
@@ -63,5 +73,6 @@ public class CommandObject extends CommandsObject implements Externalizable {
         setName(in.readUTF());
         setExec(in.readUTF());
         setDependency(in.readUTF());
+        setObjectDependecy((CommandsObject) in.readObject());
     }
 }

@@ -1,10 +1,18 @@
 package Client;
 
-import components.*;
+import components.CommandsObject;
+import components.DiplomaApp;
+import components.ParserConfigFiles;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.OutputStream;
 import java.net.*;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Client extends DiplomaApp {
     private File CLIENTCONFIG = new File("/Users/bukarevd/Documents/client.conf");
@@ -98,28 +106,42 @@ public class Client extends DiplomaApp {
 
 //        получение объекста манифеста с сервера
         CommandsObject commandsObject;
+        List<CommandsObject> objectList = new CopyOnWriteArrayList<>();
         try {
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-           while (socket.getInputStream().available() != 0) {
-               commandsObject = (CommandsObject) in.readObject();
-                if (commandsObject instanceof FileObject) {
-                    System.out.println(((FileObject) commandsObject).getName());
-                    ((FileObject) commandsObject).execute();
-                }
-                if (commandsObject instanceof CommandObject) {
-                    System.out.println(((CommandObject) commandsObject).getName());
-                    ((CommandObject) commandsObject).execute();
-                }
-                if (commandsObject instanceof PackageObject) {
-                    System.out.println(((PackageObject) commandsObject).getName());
-                    ((PackageObject) commandsObject).execute();
-                }
+            while (socket.getInputStream().available() != 0) {
+                commandsObject = (CommandsObject) in.readObject();
+                objectList.add(commandsObject);
             }
             socket.close();
+            executeCommandObject(objectList);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
+    private void executeCommandObject(List<CommandsObject> commandsObjectList) {
+        System.out.println(commandsObjectList);
+        System.out.println(commandsObjectList.isEmpty());
+        Iterator<CommandsObject> it = commandsObjectList.iterator();
+        if (it.hasNext()) {
+            CommandsObject temoObj = it.next();
+            if (temoObj.getObjectDependecy() == null) {
+                System.out.println(temoObj);
+                temoObj.execute();
+                commandsObjectList.remove(temoObj);
+                executeCommandObject(commandsObjectList);
+            } else {
+                System.out.println(temoObj + " = " + temoObj.getObjectDependecy());
+                temoObj.getObjectDependecy().execute();
+                commandsObjectList.remove(temoObj.getObjectDependecy());
+                temoObj.setObjectDependecy(null);
+                executeCommandObject(commandsObjectList);
+            }
+        }
+    }
 
 }
+
+
+

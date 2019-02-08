@@ -10,7 +10,9 @@ public class PackageObject extends CommandsObject implements Externalizable {
     private static final int VERSION = 1;
     private String name = "";
     private String version = "";
-    private String dependence = "";
+    private String dependency = "";
+    CommandsObject objectDependecy = null;
+
 
     private void setName(String name) {
         this.name = name;
@@ -24,8 +26,8 @@ public class PackageObject extends CommandsObject implements Externalizable {
         return version;
     }
 
-    private String getDependence() {
-        return dependence;
+    public String getDependency() {
+        return dependency;
     }
 
     private void setVersion(String version) {
@@ -33,9 +35,16 @@ public class PackageObject extends CommandsObject implements Externalizable {
     }
 
     private void setDependence(String dependence) {
-        this.dependence = dependence;
+        this.dependency = dependence;
     }
 
+    public CommandsObject getObjectDependecy() {
+        return objectDependecy;
+    }
+
+    public void setObjectDependecy(CommandsObject objectDependecy) {
+        this.objectDependecy = objectDependecy;
+    }
 
     public void execute() {
         ExecutorCommand executorCommand = new ExecutorCommand();
@@ -55,11 +64,12 @@ public class PackageObject extends CommandsObject implements Externalizable {
         out.writeInt(VERSION);
         out.writeUTF(getName());
         out.writeUTF(getVersion());
-        out.writeUTF(getDependence());
+        out.writeUTF(getDependency());
+        out.writeObject(getObjectDependecy());
     }
 
     @Override
-    public void readExternal(ObjectInput in) throws IOException {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         int version = in.readInt();
         if (version > VERSION) {
             throw new IOException("Unsupport version PackageObject " + version);
@@ -67,5 +77,6 @@ public class PackageObject extends CommandsObject implements Externalizable {
         setName(in.readUTF());
         setVersion(in.readUTF());
         setDependence(in.readUTF());
+        setObjectDependecy((CommandsObject) in.readObject());
     }
 }
