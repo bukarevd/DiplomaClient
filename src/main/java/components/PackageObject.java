@@ -50,9 +50,9 @@ public class PackageObject extends CommandsObject implements Externalizable {
         ExecutorCommand executorCommand = new ExecutorCommand();
         String str;
         if (getVersion() != null)
-            str = "sudo -S apt-get install" + getName() + "=" + getVersion();
+            str = "sudo -S apt-get install " + getName() + "=" + getVersion();
         else
-            str = "sudo -S apt-get install" + getName();
+            str = "sudo -S apt-get install " + getName();
         System.out.println(str);
         String[] command = new String[]{"/bin/sh", "-c", str};
         executorCommand.execute(command);

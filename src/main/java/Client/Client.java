@@ -83,7 +83,6 @@ public class Client extends DiplomaApp {
         } catch (SocketException e) {
             e.printStackTrace();
         }
-        System.out.println(client.getClientAddress());
         ParserConfigFiles parserClientFiles = new ParserConfigFiles(client);
         parserClientFiles.getConfig();
         try (Socket socket = new Socket()) {
@@ -92,14 +91,12 @@ public class Client extends DiplomaApp {
         } catch (IOException e) {
             System.out.println("Не удалось соединиться с сервером!!!");
         }
-        //client.start();
     }
 
     private void pushObject(Socket socket, Client client) throws IOException {
 // соединение с сервером для отправки имени клиента
         socket.connect(new InetSocketAddress(client.getServer(), client.getServerPort()));
         OutputStream out = socket.getOutputStream();
-
     }
 
     private void getCommandObject(Socket socket) {
@@ -121,18 +118,16 @@ public class Client extends DiplomaApp {
     }
 
     private void executeCommandObject(List<CommandsObject> commandsObjectList) {
-        System.out.println(commandsObjectList);
-        System.out.println(commandsObjectList.isEmpty());
         Iterator<CommandsObject> it = commandsObjectList.iterator();
         if (it.hasNext()) {
             CommandsObject temoObj = it.next();
             if (temoObj.getObjectDependecy() == null) {
-                System.out.println(temoObj);
+                System.out.println(temoObj.getName());
                 temoObj.execute();
                 commandsObjectList.remove(temoObj);
                 executeCommandObject(commandsObjectList);
             } else {
-                System.out.println(temoObj + " = " + temoObj.getObjectDependecy());
+                System.out.println(temoObj.getObjectDependecy().getName());
                 temoObj.getObjectDependecy().execute();
                 commandsObjectList.remove(temoObj.getObjectDependecy());
                 temoObj.setObjectDependecy(null);
