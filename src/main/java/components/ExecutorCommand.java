@@ -22,18 +22,22 @@ class ExecutorCommand {
                 if (errBytes == 0) continue;
                 String errData = String.valueOf(errBuffer, 0, errBytes);
                 System.out.println(errData);
-                if (errData.contains("Password:")) {
+                if (errData.contains("[sudo] password")) {
                     Scanner inPassw = new Scanner(System.in);
                     output.write(inPassw.nextLine());
                     output.write('\n');
                     output.flush();
                 }
+
             }
+
             while ((stdBytes = stdInput.read(stdBuffer, 0, 1024)) != -1) {
                 if (stdBytes == 0) continue;
                 String stdData = String.valueOf(stdBuffer, 0, stdBytes);
                 System.out.println(stdData);
             }
+
+
             System.out.println(pb.waitFor());
 
 

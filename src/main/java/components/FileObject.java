@@ -83,9 +83,11 @@ public class FileObject extends CommandsObject implements Externalizable {
     }
 
     public void execute() {
-//        дописать проверку на пустоту Getter, установку владельца и прав на файл
         ExecutorCommand executorCommand = new ExecutorCommand();
-        String str = "sudo -S echo " + getContent() + " >> " + getPath() + getName();
+        String createFile = "sudo -S echo " + getContent() + " >> " + getPath() + getName();
+        String setOwnerGroup = " sudo -S chown -R " + getOwner() + ":" + getGroup() + " " + getPath() + getName();
+        String setChmod = " sudo -S chmod " + getChmod() + " " + getPath() + getName();
+        String str = createFile + " |" + setOwnerGroup + " |" + setChmod;
         System.out.println(str);
         String[] command = new String[]{"/bin/sh", "-c", str};
         executorCommand.execute(command);

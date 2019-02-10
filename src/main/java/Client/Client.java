@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Client extends DiplomaApp {
-    private File CLIENTCONFIG = new File("/Users/bukarevd/Documents/client.conf");
+    private File CLIENTCONFIG = new File("/etc/diplomClient/client.conf");
+   // private File CLIENTCONFIG = new File("/Users/bukarevd/Documents/client.conf");
     private int clientPort;
     private String clientAddress;
     private int serverPort;
@@ -67,6 +68,8 @@ public class Client extends DiplomaApp {
     }
 
     public static void main(String[] args) {
+        System.out.println(System.getProperty("os.name").toLowerCase());
+        System.out.println(System.getProperty("os.version"));
         Client client = new Client();
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
@@ -127,11 +130,13 @@ public class Client extends DiplomaApp {
                 commandsObjectList.remove(temoObj);
                 executeCommandObject(commandsObjectList);
             } else {
+                if(commandsObjectList.contains(temoObj.getObjectDependecy())){
                 System.out.println(temoObj.getObjectDependecy().getName());
                 temoObj.getObjectDependecy().execute();
                 commandsObjectList.remove(temoObj.getObjectDependecy());
                 temoObj.setObjectDependecy(null);
-                executeCommandObject(commandsObjectList);
+                executeCommandObject(commandsObjectList);}
+                else System.out.println("Зависимость " + temoObj.getObjectDependecy().getName() + " не найдена");
             }
         }
     }

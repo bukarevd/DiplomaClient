@@ -1,9 +1,6 @@
 package components;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.*;
 
 public class PackageObject extends CommandsObject implements Externalizable {
     private static final long serialVersionUID = 1L;
@@ -47,16 +44,56 @@ public class PackageObject extends CommandsObject implements Externalizable {
     }
 
     public void execute() {
-        ExecutorCommand executorCommand = new ExecutorCommand();
-        String str;
-        if (getVersion() != null)
-            str = "sudo -S apt-get install " + getName() + "=" + getVersion();
-        else
-            str = "sudo -S apt-get install " + getName();
-        System.out.println(str);
-        String[] command = new String[]{"/bin/sh", "-c", str};
-        executorCommand.execute(command);
+        String pm = null;
+        String verDel = null;
+        switch (getOsType()) {
+            case "Ubuntu":
+                pm = "apt-get";
+                verDel = "=";
+                System.out.println(pm);
+                break;
+            case "CentOS":
+                pm = "yum";
+                verDel = "-";
+                System.out.println(pm);
+                break;
+        }
+        if (!pm.equals("Unknown")) {
+            ExecutorCommand executorCommand = new ExecutorCommand();
+            String str;
+            System.out.println(getVersion());
+            if (!getVersion().isEmpty())
+                str = "sudo -S " + pm + " install -y " + getName() + verDel + getVersion();
+            else
+                str = "sudo -S " + pm + " install -y " + getName();
+            System.out.println(str);
+            String[] command = new String[]{"/bin/sh", "-c", str};
+            executorCommand.execute(command);
+        }else{
+            System.out.println("Unsupport OS");;
+        }
 
+    }
+
+    private String getOsType() {
+        InputStreamReader stdInput;
+        String stdData = null;
+        String[] typeOS = new String[]{"/bin/sh", "-c", "cat /etc/*release"};
+        try {
+            Process process = new ProcessBuilder(typeOS).start();
+            stdInput = new InputStreamReader(process.getInputStream());
+            int stdBytes;
+            char[] stdBuffer = new char[1024];
+            while ((stdBytes = stdInput.read(stdBuffer, 0, 1024)) != -1) {
+                if (stdBytes == 0) continue;
+                stdData = String.valueOf(stdBuffer, 0, stdBytes);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (stdData.contains("Ubuntu")) return "Ubuntu";
+        else if (stdData.contains("CentOS")) return "CentOS";
+        else return "Unknown";
     }
 
     @Override

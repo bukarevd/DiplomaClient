@@ -20,9 +20,17 @@ public class ParserConfigFiles {
     }
 
     private void readClientFile(Client client) {
+
         File fileConfig = client.getCLIENTCONFIG();
-        String configClientString = reader(fileConfig);
-        setValue(client, configClientString);
+        String configClientString = null;
+        if(fileConfig.exists()) {
+            configClientString = reader(fileConfig);
+            setValue(client, configClientString);
+        }
+        else {
+            System.out.println("Config file not found");
+        }
+
 
     }
 
