@@ -29,7 +29,6 @@ class ExecutorCommand {
                     output.flush();
                 }
             }
-
             while ((stdBytes = stdInput.read(stdBuffer, 0, 1024)) != -1) {
                 if (stdBytes == 0) continue;
                 String stdData = String.valueOf(stdBuffer, 0, stdBytes);

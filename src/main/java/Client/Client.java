@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Client {
     // private File CLIENTCONFIG = new File("/etc/diplomClient/client.conf");
@@ -87,7 +87,7 @@ public class Client {
 
 //        получение объекста манифеста с сервера
         CommandsObject commandsObject;
-        List<CommandsObject> objectList = new ArrayList<>();
+        List<CommandsObject> objectList = new CopyOnWriteArrayList<>();
         try {
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             while (socket.getInputStream().available() != 0) {
