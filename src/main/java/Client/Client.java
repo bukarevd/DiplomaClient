@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Client extends DiplomaApp {
-    private File CLIENTCONFIG = new File("/etc/diplomClient/client.conf");
-   // private File CLIENTCONFIG = new File("/Users/bukarevd/Documents/client.conf");
+    //private File CLIENTCONFIG = new File("/etc/diplomClient/client.conf");
+    private File CLIENTCONFIG = new File("/Users/bukarevd/Documents/client.conf");
     private int clientPort;
     private String clientAddress;
     private int serverPort;

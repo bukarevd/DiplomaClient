@@ -6,6 +6,7 @@ public class PackageObject extends CommandsObject implements Externalizable {
     private static final long serialVersionUID = 1L;
     private static final int VERSION = 1;
     private String name = "";
+    private String action = "";
     private String version = "";
     private String dependency = "";
     CommandsObject objectDependecy = null;
@@ -17,6 +18,14 @@ public class PackageObject extends CommandsObject implements Externalizable {
 
     public String getName() {
         return name;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
     }
 
     private String getVersion() {
@@ -60,20 +69,35 @@ public class PackageObject extends CommandsObject implements Externalizable {
         }
         if (!pm.equals("Unknown")) {
             ExecutorCommand executorCommand = new ExecutorCommand();
+
             String str;
-            System.out.println(getVersion());
+            System.out.println(getAction());
             if (!getVersion().isEmpty())
-                str = "sudo -S " + pm + " install -y " + getName() + verDel + getVersion();
+                str = "sudo -S " + pm + " " + getAction() + " -y " + getName() + verDel + getVersion();
             else
-                str = "sudo -S " + pm + " install -y " + getName();
+                str = "sudo -S " + pm + " " + getAction() + " -y " + getName();
             System.out.println(str);
             String[] command = new String[]{"/bin/sh", "-c", str};
             executorCommand.execute(command);
-        }else{
-            System.out.println("Unsupport OS");;
+        } else {
+            System.out.println("Unsupport OS");
+            ;
         }
 
     }
+//    private String getCommand(){
+//        String command;
+//        switch (getAction()) {
+//            case "install":
+//
+//                break;
+//            case "update":
+//                break;
+//            case "remove":
+//                break;
+//        }
+//           return command;
+//    }
 
     private String getOsType() {
         InputStreamReader stdInput;
@@ -100,6 +124,7 @@ public class PackageObject extends CommandsObject implements Externalizable {
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeInt(VERSION);
         out.writeUTF(getName());
+        out.writeUTF(getAction());
         out.writeUTF(getVersion());
         out.writeUTF(getDependency());
         out.writeObject(getObjectDependecy());
@@ -112,6 +137,7 @@ public class PackageObject extends CommandsObject implements Externalizable {
             throw new IOException("Unsupport version PackageObject " + version);
         }
         setName(in.readUTF());
+        setAction(in.readUTF());
         setVersion(in.readUTF());
         setDependence(in.readUTF());
         setObjectDependecy((CommandsObject) in.readObject());
