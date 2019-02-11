@@ -7,31 +7,30 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 
 public class ParserConfigFiles {
-    private DiplomaApp app;
+    private Client client;
 
-    public ParserConfigFiles(DiplomaApp app) {
-        this.app = app;
+    public Client getClient() {
+        return client;
+    }
+
+    public ParserConfigFiles(Client client) {
+        this.client = client;
     }
 
     public void getConfig() {
-        if (app instanceof Client) {
-            readClientFile((Client) app);
-        }
+        readClientFile(getClient());
     }
 
     private void readClientFile(Client client) {
 
         File fileConfig = client.getCLIENTCONFIG();
         String configClientString = null;
-        if(fileConfig.exists()) {
+        if (fileConfig.exists()) {
             configClientString = reader(fileConfig);
             setValue(client, configClientString);
-        }
-        else {
+        } else {
             System.out.println("Config file not found");
         }
-
-
     }
 
     private String reader(File file) {

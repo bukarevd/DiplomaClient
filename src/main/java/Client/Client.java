@@ -1,7 +1,6 @@
 package Client;
 
 import components.CommandsObject;
-import components.DiplomaApp;
 import components.ParserConfigFiles;
 
 import java.io.File;
@@ -14,9 +13,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class Client extends DiplomaApp {
-    //private File CLIENTCONFIG = new File("/etc/diplomClient/client.conf");
-    private File CLIENTCONFIG = new File("/Users/bukarevd/Documents/client.conf");
+public class Client {
+    private File CLIENTCONFIG = new File("/etc/diplomClient/client.conf");
+    //private File CLIENTCONFIG = new File("/Users/bukarevd/Documents/client.conf");
     private int clientPort;
     private String clientAddress;
     private int serverPort;

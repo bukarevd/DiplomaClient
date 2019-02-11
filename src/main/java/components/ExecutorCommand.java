@@ -28,7 +28,6 @@ class ExecutorCommand {
                     output.write('\n');
                     output.flush();
                 }
-
             }
 
             while ((stdBytes = stdInput.read(stdBuffer, 0, 1024)) != -1) {
@@ -37,9 +36,7 @@ class ExecutorCommand {
                 System.out.println(stdData);
             }
 
-
             System.out.println(pb.waitFor());
-
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
