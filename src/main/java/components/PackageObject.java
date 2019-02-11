@@ -59,19 +59,16 @@ public class PackageObject extends CommandsObject implements Externalizable {
             case "Ubuntu":
                 pm = "apt-get";
                 verDel = "=";
-                System.out.println(pm);
                 break;
             case "CentOS":
                 pm = "yum";
                 verDel = "-";
-                System.out.println(pm);
                 break;
         }
         if (!pm.equals("Unknown")) {
             ExecutorCommand executorCommand = new ExecutorCommand();
 
             String str;
-            System.out.println(getAction());
             if (!getVersion().isEmpty())
                 str = "sudo -S " + pm + " " + getAction() + " -y " + getName() + verDel + getVersion();
             else
@@ -81,23 +78,9 @@ public class PackageObject extends CommandsObject implements Externalizable {
             executorCommand.execute(command);
         } else {
             System.out.println("Unsupport OS");
-            ;
         }
 
     }
-//    private String getCommand(){
-//        String command;
-//        switch (getAction()) {
-//            case "install":
-//
-//                break;
-//            case "update":
-//                break;
-//            case "remove":
-//                break;
-//        }
-//           return command;
-//    }
 
     private String getOsType() {
         InputStreamReader stdInput;
