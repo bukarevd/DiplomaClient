@@ -6,16 +6,15 @@ import components.ParserConfigFiles;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.OutputStream;
-import java.net.*;
-import java.util.Enumeration;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Client {
-    private File CLIENTCONFIG = new File("/etc/diplomClient/client.conf");
-    //private File CLIENTCONFIG = new File("/Users/bukarevd/Documents/client.conf");
+    // private File CLIENTCONFIG = new File("/etc/diplomClient/client.conf");
+    private File CLIENTCONFIG = new File("/Users/bukarevd/Documents/client.conf");
     private int clientPort;
     private String clientAddress;
     private int serverPort;
@@ -67,24 +66,7 @@ public class Client {
     }
 
     public static void main(String[] args) {
-        System.out.println(System.getProperty("os.name").toLowerCase());
-        System.out.println(System.getProperty("os.version"));
         Client client = new Client();
-        try {
-            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            while (interfaces.hasMoreElements()) {
-                NetworkInterface iface = interfaces.nextElement();
-                if (!iface.isUp() || !iface.isLoopback()) continue;
-                Enumeration<InetAddress> addresses = iface.getInetAddresses();
-                while (addresses.hasMoreElements()) {
-                    InetAddress addr = addresses.nextElement();
-                    if (addr instanceof Inet6Address) continue;
-                    client.setClientAddress(addr.getHostAddress());
-                }
-            }
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
         ParserConfigFiles parserClientFiles = new ParserConfigFiles(client);
         parserClientFiles.getConfig();
         try (Socket socket = new Socket()) {
@@ -96,16 +78,16 @@ public class Client {
     }
 
     private void pushObject(Socket socket, Client client) throws IOException {
-// соединение с сервером для отправки имени клиента
+        // соединение с сервером для отправки имени клиента
         socket.connect(new InetSocketAddress(client.getServer(), client.getServerPort()));
-        OutputStream out = socket.getOutputStream();
+        //OutputStream out = socket.getOutputStream();
     }
 
     private void getCommandObject(Socket socket) {
 
 //        получение объекста манифеста с сервера
         CommandsObject commandsObject;
-        List<CommandsObject> objectList = new CopyOnWriteArrayList<>();
+        List<CommandsObject> objectList = new ArrayList<>();
         try {
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             while (socket.getInputStream().available() != 0) {
@@ -129,13 +111,13 @@ public class Client {
                 commandsObjectList.remove(temoObj);
                 executeCommandObject(commandsObjectList);
             } else {
-                if(commandsObjectList.contains(temoObj.getObjectDependecy())){
-                System.out.println(temoObj.getObjectDependecy().getName());
-                temoObj.getObjectDependecy().execute();
-                commandsObjectList.remove(temoObj.getObjectDependecy());
-                temoObj.setObjectDependecy(null);
-                executeCommandObject(commandsObjectList);}
-                else System.out.println("Зависимость " + temoObj.getObjectDependecy().getName() + " не найдена");
+                if (commandsObjectList.contains(temoObj.getObjectDependecy())) {
+                    System.out.println(temoObj.getObjectDependecy().getName());
+                    temoObj.getObjectDependecy().execute();
+                    commandsObjectList.remove(temoObj.getObjectDependecy());
+                    temoObj.setObjectDependecy(null);
+                    executeCommandObject(commandsObjectList);
+                } else System.out.println("Зависимость " + temoObj.getObjectDependecy().getName() + " не найдена");
             }
         }
     }
